@@ -125,23 +125,25 @@ function addFocusToSelection(
   node: Node,
   offset: number
 ): void {
-  if (selection.extend && containsNode(getActiveElement(), node) && selection.type !== 'None') {
-    // If `extend` is called while another element has focus, an error is
-    // thrown. We therefore disable `extend` if the active element is somewhere
-    // other than the node we are selecting. This should only occur in Firefox,
-    // since it is the only browser to support multiple selections.
-    // See https://bugzilla.mozilla.org/show_bug.cgi?id=921444.
-    selection.extend(node, offset);
-  } else {
-    // IE doesn't support extend. This will mean no backward selection.
-    // Extract the existing selection range and add focus to it.
-    // Additionally, clone the selection range. IE11 throws an
-    // InvalidStateError when attempting to access selection properties
-    // after the range is detached.
-    var range = selection.getRangeAt(0);
-    range.setEnd(node, offset);
-    selection.addRange(range.cloneRange());
-  }
+    if (selection.type !== 'None') {
+      if (selection.extend && containsNode(getActiveElement(), node)) {
+        // If `extend` is called while another element has focus, an error is
+        // thrown. We therefore disable `extend` if the active element is somewhere
+        // other than the node we are selecting. This should only occur in Firefox,
+        // since it is the only browser to support multiple selections.
+        // See https://bugzilla.mozilla.org/show_bug.cgi?id=921444.
+        selection.extend(node, offset);
+      } else {
+        // IE doesn't support extend. This will mean no backward selection.
+        // Extract the existing selection range and add focus to it.
+        // Additionally, clone the selection range. IE11 throws an
+        // InvalidStateError when attempting to access selection properties
+        // after the range is detached.
+        var range = selection.getRangeAt(0);
+        range.setEnd(node, offset);
+        selection.addRange(range.cloneRange());
+      }
+    }
 }
 
 function addPointToSelection(
